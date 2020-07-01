@@ -172,13 +172,13 @@ public class BookCatalogActivity extends MvpLoaderActivity<BookCatalogContract.P
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                getPresenter().loadData(position + 1);
-                sectionDataIndex = position;
-                tvSectionSelection.setText((String) sectionAdapter.getData().get(position));
-                ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0);
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
+//                getPresenter().loadData(position + 1);
+//                sectionDataIndex = position;
+//                tvSectionSelection.setText((String) sectionAdapter.getData().get(position));
+//                ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0);
+//                if (dialog != null) {
+//                    dialog.dismiss();
+//                }
             }
         });
         return adapter;

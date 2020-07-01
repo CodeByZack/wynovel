@@ -95,6 +95,14 @@ public class Channel implements Serializable {
         this.selectedStatus = selectedStatus;
     }
 
+    public List<Channel> getSubor() {
+        return subor;
+    }
+
+    public void setSubor(List<Channel> subor) {
+        this.subor = subor;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

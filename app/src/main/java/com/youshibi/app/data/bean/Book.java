@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Chu on 2016/12/3.
@@ -46,6 +48,16 @@ public class Book implements Serializable, Parcelable {
     @SerializedName("chapter_title")
     private String chapterName;
 
+    @SerializedName("chapter")
+    private Map<String,BookChapter> chapter;
+
+    public Map<String, BookChapter> getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(Map<String, BookChapter> chapter) {
+        this.chapter = chapter;
+    }
 
     public void setChapterCount(int chapterCount) {
         this.chapterCount = chapterCount;
@@ -231,6 +243,7 @@ public class Book implements Serializable, Parcelable {
         dest.writeLong(this.collectionNum);
         dest.writeLong(this.recommendNum);
         dest.writeString(this.createDateTime);
+        dest.writeMap(this.chapter);
     }
 
     protected Book(Parcel in) {
@@ -247,6 +260,7 @@ public class Book implements Serializable, Parcelable {
         this.collectionNum = in.readLong();
         this.recommendNum = in.readLong();
         this.createDateTime = in.readString();
+        this.chapter = in.readHashMap(HashMap.class.getClassLoader());
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {

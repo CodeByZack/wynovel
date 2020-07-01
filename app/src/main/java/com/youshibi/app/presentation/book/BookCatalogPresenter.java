@@ -7,13 +7,16 @@ import com.youshibi.app.R;
 import com.youshibi.app.base.BaseRxPresenter;
 import com.youshibi.app.data.DataManager;
 import com.youshibi.app.data.bean.Book;
+import com.youshibi.app.data.bean.BookChapter;
 import com.youshibi.app.data.bean.BookSectionItem;
 import com.youshibi.app.rx.SimpleSubscriber;
 import com.youshibi.app.ui.help.CommonAdapter;
 import com.youshibi.app.ui.help.CommonViewHolder;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -55,22 +58,17 @@ public class BookCatalogPresenter extends BaseRxPresenter<BookCatalogContract.Vi
 
     @Override
     public void loadData(int page) {
-        DataManager
-                .getInstance()
-                .getBookSectionList(mBook.getId(), true, page, PAGE_SIZE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleSubscriber<List<BookSectionItem>>() {
-                    @Override
-                    public void onNext(List<BookSectionItem> bookSectionItems) {
-                        if (isViewAttached()) {
-                            setData(bookSectionItems);
+        Map<String, BookChapter> chapters = mBook.getChapter();
+        List<BookSectionItem> datas = new LinkedList<>();
 
-                        }
-
-                    }
-                });
-
+        for (Map.Entry<String , BookChapter> entry : chapters.entrySet()){
+            BookSectionItem item = new BookSectionItem();
+            item.setSectionName(entry.getValue().getChapterName());
+            item.setSectionId(entry.getValue().getChapterId());
+            item.setSectionIndex(datas.size());
+            datas.add(item);
+        }
+        setData(datas);
     }
 
     private void setData(List<BookSectionItem> bookSectionItems) {

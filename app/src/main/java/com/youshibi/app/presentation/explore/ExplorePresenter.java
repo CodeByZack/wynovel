@@ -113,23 +113,15 @@ public class ExplorePresenter extends BaseRxPresenter<ExploreContract.View> impl
                         selectedBookLabels.add(bookType);
                     }
                 }*/
-                mAlwaysSelectedChannels.add(channel);
 
-                if (channel.getSelectedStatus() == BookType.STATUS_ALWAYS_SELECTED) {
-//                    mAlwaysSelectedChannels.add(channel);
-
-                } else {
-
-                    if (isFirst && channel.getSelectedStatus() == BookType.STATUS_DEFAULT_SELECTED) {
-                        mCommonSelectedChannels.add(channel);
-                        selectedBookLabels.add(channel);
-                        continue;
-                    }
-                    if (!selectedBookLabels.contains(channel)) {
-                        mUnselectedChannels.add(channel);
-
-                    }
+                if(channel.getSubor()!=null){
+                    mAlwaysSelectedChannels.addAll(channel.getSubor());
+                }else{
+                    mAlwaysSelectedChannels.add(channel);
                 }
+
+
+
             }
             // if (!isFirst) {
             selectedBookLabels.addAll(0, mAlwaysSelectedChannels);

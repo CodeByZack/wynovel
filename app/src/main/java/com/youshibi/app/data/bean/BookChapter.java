@@ -2,13 +2,15 @@ package com.youshibi.app.data.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * author : zchu
  * date   : 2017/9/20
  * desc   :
  */
 
-public class BookChapter {
+public class BookChapter implements Serializable {
 
     /**
      * chapter_id : d6771dd9-05da-4aa6-9344-0017ee8623cf
@@ -17,16 +19,16 @@ public class BookChapter {
      * create_time : 2017-04-02T10:51:45.367
      */
 
-    @SerializedName("chapter_id")
+    @SerializedName("id")
     private String chapterId;
 
     @SerializedName("chapter_index")
     private int chapterIndex;
 
-    @SerializedName("chapter_name")
+    @SerializedName("title")
     private String chapterName;
 
-    @SerializedName("create_time")
+    @SerializedName("update_time")
     private long createTime;
 
     public String getChapterId() {
