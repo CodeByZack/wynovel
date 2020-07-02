@@ -48,27 +48,21 @@ public class ReadPresenter extends BaseRxPresenter<ReadContract.View> implements
     @Override
     public void start() {
         super.start();
-
     }
 
     private void loadSectionList() {
-
         doLoadData(mSectionIndex, mSectionId, true);
-
-
+        getView().setSectionListAdapter(createBookSectionAdapter(mBookSectionItems));
     }
 
     @Override
     public void loadData() {
         getView().showLoading();
         loadSectionList();
-
-
     }
 
     @Override
     public void saveReadLocation() {
-
         mBookTb.setLatestReadSection(mSectionIndex);
         mBookTb.setLatestReadSectionId(mSectionId);
         DBManger.getInstance().updateBookTb(mBookTb);

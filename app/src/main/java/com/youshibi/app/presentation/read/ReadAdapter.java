@@ -31,7 +31,12 @@ public class ReadAdapter extends StringAdapter {
     @Override
     protected String getPageSource(int section) {
         BookSectionContent sectionContent = bookArray.get(section);
-        return sectionContent != null ? bookArray.get(section).getContent() : null;
+        if(sectionContent == null)return null;
+        String content = bookArray.get(section).getContent();
+        content = content.replace("<p>","");
+        content = content.replace("<p/>","\n");
+
+        return content;
     }
 
     @Override

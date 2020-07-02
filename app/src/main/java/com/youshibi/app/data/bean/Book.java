@@ -54,13 +54,13 @@ public class Book implements Serializable, Parcelable {
 
 
     @SerializedName("chapter")
-    private Map<String,BookChapter> chapter;
+    private Map<String,BookSectionItem> chapter;
 
-    public Map<String, BookChapter> getChapter() {
+    public Map<String, BookSectionItem> getChapter() {
         return chapter;
     }
 
-    public void setChapter(Map<String, BookChapter> chapter) {
+    public void setChapter(Map<String, BookSectionItem> chapter) {
         this.chapter = chapter;
     }
 

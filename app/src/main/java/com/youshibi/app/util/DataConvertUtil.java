@@ -2,8 +2,12 @@ package com.youshibi.app.util;
 
 import android.support.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.youshibi.app.data.bean.Book;
+import com.youshibi.app.data.bean.BookSectionItem;
 import com.youshibi.app.data.db.table.BookTb;
+
+import java.util.ArrayList;
 
 /**
  * Created by Chu on 2017/5/29.
@@ -11,7 +15,7 @@ import com.youshibi.app.data.db.table.BookTb;
 
 public class DataConvertUtil {
 
-    public static BookTb book2BookTb(Book book, @Nullable BookTb bookTb) {
+    public static BookTb book2BookTb(Book book, ArrayList<BookSectionItem> bookSectionItems, @Nullable BookTb bookTb) {
         if (bookTb == null) {
             bookTb = new BookTb();
         }
@@ -22,6 +26,7 @@ public class DataConvertUtil {
         bookTb.setIsFinished(book.isFinished());
         bookTb.setName(book.getName());
         bookTb.setSectionCount(book.getChapterCount());
+        bookTb.setChaptersJson(new Gson().toJson(bookSectionItems));
         return bookTb;
     }
 

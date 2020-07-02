@@ -17,6 +17,7 @@ import com.youshibi.app.R;
 import com.youshibi.app.data.DBManger;
 import com.youshibi.app.data.bean.Book;
 import com.youshibi.app.data.bean.BookDetail;
+import com.youshibi.app.data.bean.BookSectionItem;
 import com.youshibi.app.mvp.MvpLoaderActivity;
 import com.youshibi.app.ui.help.CommonAdapter;
 import com.youshibi.app.ui.help.CommonViewHolder;
@@ -27,6 +28,7 @@ import com.youshibi.app.util.GlideApp;
 import com.youshibi.app.util.StringUtils;
 import com.youshibi.app.util.ToastUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -179,7 +181,11 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
                 getPresenter().openRead(this);
                 break;
             case R.id.fl_add_bookcase:
-                DBManger.getInstance().saveBookTb(book);
+                ArrayList<BookSectionItem> bookChapters = new ArrayList<>();
+                for (BookSectionItem c : book.getChapter().values()){
+                    bookChapters.add(c);
+                }
+                DBManger.getInstance().saveBookTb(book,bookChapters);
                 ToastUtil.showToast("已加入书架");
                 break;
             case R.id.fl_download_book:

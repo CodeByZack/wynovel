@@ -54,6 +54,7 @@ public class BookTb implements Parcelable {
 
     private long updateTimestamp;
 
+    private String chaptersJson;
 
     /**
      * Used to resolve relations
@@ -68,12 +69,12 @@ public class BookTb implements Parcelable {
     private transient BookTbDao myDao;
 
 
-    @Generated(hash = 710856636)
+    @Generated(hash = 1269462461)
     public BookTb(String id, String name, String coverUrl, String describe, String author,
             boolean isFinished, int readNumber, long latestReadTimestamp,
             Integer latestReadSection, String latestReadSectionId, int latestReadPage,
             boolean hasUpdate, Integer sectionCount, int sort, long createTimestamp,
-            long updateTimestamp) {
+            long updateTimestamp, String chaptersJson) {
         this.id = id;
         this.name = name;
         this.coverUrl = coverUrl;
@@ -90,6 +91,7 @@ public class BookTb implements Parcelable {
         this.sort = sort;
         this.createTimestamp = createTimestamp;
         this.updateTimestamp = updateTimestamp;
+        this.chaptersJson = chaptersJson;
     }
 
     @Generated(hash = 1469509304)
@@ -257,6 +259,7 @@ public class BookTb implements Parcelable {
         dest.writeInt(this.latestReadPage);
         dest.writeByte(this.hasUpdate ? (byte) 1 : (byte) 0);
         dest.writeInt(this.sort);
+        dest.writeString(this.chaptersJson);
     }
 
     public Integer getSectionCount() {
@@ -283,6 +286,14 @@ public class BookTb implements Parcelable {
         this.updateTimestamp = updateTimestamp;
     }
 
+    public String getChaptersJson() {
+        return this.chaptersJson;
+    }
+
+    public void setChaptersJson(String chaptersJson) {
+        this.chaptersJson = chaptersJson;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1406023060)
     public void __setDaoSession(DaoSession daoSession) {
@@ -304,6 +315,7 @@ public class BookTb implements Parcelable {
         this.latestReadPage = in.readInt();
         this.hasUpdate = in.readByte() != 0;
         this.sort = in.readInt();
+        this.chaptersJson = in.readString();
     }
 
     public static final Creator<BookTb> CREATOR = new Creator<BookTb>() {

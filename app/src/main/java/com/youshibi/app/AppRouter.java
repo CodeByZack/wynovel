@@ -14,6 +14,7 @@ import android.webkit.WebView;
 
 import com.youshibi.app.data.bean.Book;
 import com.youshibi.app.data.bean.BookChapter;
+import com.youshibi.app.data.bean.BookSectionItem;
 import com.youshibi.app.data.db.table.BookTb;
 import com.youshibi.app.pref.AppConfig;
 import com.youshibi.app.presentation.AboutActivity;
@@ -119,7 +120,7 @@ public class AppRouter {
         CountEventHelper.countBookDetail(context, book);
     }
 
-    public static void showReadActivity(Context context, Book book, Integer sectionIndex, String sectionId, ArrayList<BookChapter> bookChapters) {
+    public static void showReadActivity(Context context, Book book, Integer sectionIndex, String sectionId, ArrayList<BookSectionItem> bookChapters) {
         context.startActivity(ReadActivity.newIntent(context, book, sectionIndex, sectionId, bookChapters));
         CountEventHelper.countBookRead(context, book.getId(), book.getName());
     }
@@ -143,7 +144,7 @@ public class AppRouter {
         CountEventHelper.countBookSearch(context, keyword);
     }
 
-    public static void showBookCatalogActivity(Context context, Book book, int sectionCount, Map<String, BookChapter> chapter) {
+    public static void showBookCatalogActivity(Context context, Book book, int sectionCount, Map<String, BookSectionItem> chapter) {
         context.startActivity(BookCatalogActivity.newIntent(context, book, sectionCount, chapter));
     }
 

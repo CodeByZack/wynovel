@@ -7,9 +7,7 @@ import com.youshibi.app.R;
 import com.youshibi.app.base.BaseRxPresenter;
 import com.youshibi.app.data.DataManager;
 import com.youshibi.app.data.bean.Book;
-import com.youshibi.app.data.bean.BookChapter;
 import com.youshibi.app.data.bean.BookSectionItem;
-import com.youshibi.app.rx.SimpleSubscriber;
 import com.youshibi.app.ui.help.CommonAdapter;
 import com.youshibi.app.ui.help.CommonViewHolder;
 
@@ -33,15 +31,15 @@ public class BookCatalogPresenter extends BaseRxPresenter<BookCatalogContract.Vi
 
     private Book mBook;
     private int mSectionCount;
-    private ArrayList<BookChapter> mBookChapters;
+    private ArrayList<BookSectionItem> mBookSectionItems;
 
     private CommonAdapter<BookSectionItem> bookSectionAdapter;
     private List<String> sectionData;
 
-    public BookCatalogPresenter(Book book, int sectionCount,ArrayList<BookChapter> bookChapters) {
+    public BookCatalogPresenter(Book book, int sectionCount,ArrayList<BookSectionItem> bookChapters) {
         this.mBook = book;
         this.mSectionCount = sectionCount;
-        this.mBookChapters = bookChapters;
+        this.mBookSectionItems = bookChapters;
     }
 
     @Override
@@ -60,15 +58,7 @@ public class BookCatalogPresenter extends BaseRxPresenter<BookCatalogContract.Vi
 
     @Override
     public void loadData(int page) {
-        List<BookSectionItem> datas = new LinkedList<>();
-        for (BookChapter chapter : mBookChapters){
-            BookSectionItem item = new BookSectionItem();
-            item.setSectionName(chapter.getChapterName());
-            item.setSectionId(chapter.getChapterId());
-            item.setSectionIndex(datas.size());
-            datas.add(item);
-        }
-        setData(datas);
+        setData(mBookSectionItems);
     }
 
     private void setData(List<BookSectionItem> bookSectionItems) {
@@ -80,7 +70,7 @@ public class BookCatalogPresenter extends BaseRxPresenter<BookCatalogContract.Vi
                     helper.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                             AppRouter.showReadActivity(v.getContext(), mBook, item.getSectionIndex(), item.getSectionId(),mBookChapters);
+                             AppRouter.showReadActivity(v.getContext(), mBook, item.getSectionIndex(), item.getSectionId(), mBookSectionItems);
                         }
                     });
                 }

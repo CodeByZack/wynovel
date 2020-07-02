@@ -1,5 +1,6 @@
 package com.youshibi.app.presentation.read;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.gyf.barlibrary.ImmersionBar;
 import com.youshibi.app.AppManager;
 import com.youshibi.app.R;
@@ -101,26 +104,16 @@ public class ReadActivity extends MvpActivity<ReadContract.Presenter> implements
     private ArrayList<BookSectionItem> mBookCHAPTER;
 
 
-    public static Intent newIntent(Context context, Book book, Integer sectionIndex, String sectionId, ArrayList<BookChapter> bookChapters) {
+    public static Intent newIntent(Context context, Book book, Integer sectionIndex, String sectionId, ArrayList<BookSectionItem> bookChapters) {
 
-        ArrayList<BookSectionItem> bookSectionItems = new ArrayList<>();
 
-        for (BookChapter c : bookChapters){
-            BookSectionItem bookSectionItem = new BookSectionItem();
-            bookSectionItem.setSectionIndex(c.getChapterIndex());
-            bookSectionItem.setSectionId(c.getChapterId());
-            bookSectionItem.setSectionName(c.getChapterName());
-            bookSectionItems.add(bookSectionItem);
-        }
 
         Intent intent = new Intent(context, ReadActivity.class);
-        BookTb bookTb = DataConvertUtil.book2BookTb(book, null);
+        BookTb bookTb = DataConvertUtil.book2BookTb(book,bookChapters, null);
         bookTb.setLatestReadSection(sectionIndex);
         bookTb.setLatestReadSectionId(sectionId);
-
-        intent
-                .putExtra(K_EXTRA_BOOK_TB, bookTb);
-        intent.putParcelableArrayListExtra(K_EXTRA_BOOK_CHAPTER,bookSectionItems);
+        intent.putExtra(K_EXTRA_BOOK_TB, bookTb);
+        intent.putParcelableArrayListExtra(K_EXTRA_BOOK_CHAPTER,bookChapters);
         return intent;
     }
 
@@ -129,11 +122,15 @@ public class ReadActivity extends MvpActivity<ReadContract.Presenter> implements
         if (dbBookTb != null) {//优先使用数据库中的bookTb
             bookTb = dbBookTb;
         }
+        ArrayList<BookSectionItem> bookSectionItems = new Gson().fromJson(dbBookTb.getChaptersJson(),new TypeToken<ArrayList<BookSectionItem>>() {}.getType());
+
         Intent intent = new Intent(context, ReadActivity.class);
         intent.putExtra(K_EXTRA_BOOK_TB, (Parcelable) bookTb);
+        intent.putParcelableArrayListExtra(K_EXTRA_BOOK_CHAPTER,bookSectionItems);
         return intent;
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

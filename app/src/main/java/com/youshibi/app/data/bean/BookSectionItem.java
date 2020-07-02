@@ -20,10 +20,10 @@ public class BookSectionItem implements Serializable, Parcelable {
     @SerializedName("chapter_index")
     private int sectionIndex;
 
-    @SerializedName("chapter_name")
+    @SerializedName("title")
     private String sectionName;
 
-    @SerializedName("chapter_id")
+    @SerializedName("id")
     private String sectionId;
 
     protected BookSectionItem(Parcel in) {

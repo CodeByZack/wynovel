@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.youshibi.app.AppContext;
 import com.youshibi.app.data.bean.Book;
+import com.youshibi.app.data.bean.BookSectionItem;
 import com.youshibi.app.data.db.DBRepository;
 import com.youshibi.app.data.db.table.BookTb;
 import com.youshibi.app.data.db.table.BookTbDao;
@@ -14,6 +15,7 @@ import com.youshibi.app.event.AddBook2BookcaseEvent;
 import com.youshibi.app.rx.RxBus;
 import com.youshibi.app.util.DataConvertUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -42,15 +44,17 @@ public final class DBManger {
      *
      * @return book 在数据库中的Id
      */
-    public String saveBookTb(Book book) {
+    public String saveBookTb(Book book, ArrayList<BookSectionItem> bookSectionItems) {
         BookTb bookTb = loadBookTbById(book.getId());
         if (bookTb == null) {
-            bookTb = DataConvertUtil.book2BookTb(book, null);
+            bookTb = DataConvertUtil.book2BookTb(book, bookSectionItems,null);
+            bookTb.setLatestReadSection(0);
+            bookTb.setLatestReadSectionId(bookSectionItems.get(0).getSectionId());
             bookTb.setSort((int) mDaoSession.getBookTbDao().count());
             mDaoSession.getBookTbDao().insert(bookTb);
             RxBus.getDefault().post(new AddBook2BookcaseEvent(bookTb));
         } else {
-            bookTb = DataConvertUtil.book2BookTb(book, bookTb);
+            bookTb = DataConvertUtil.book2BookTb(book,bookSectionItems, bookTb);
             mDaoSession.getBookTbDao().update(bookTb);
         }
         return book.getId();

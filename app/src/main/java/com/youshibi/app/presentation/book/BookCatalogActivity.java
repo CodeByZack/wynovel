@@ -21,6 +21,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.youshibi.app.R;
 import com.youshibi.app.data.bean.Book;
 import com.youshibi.app.data.bean.BookChapter;
+import com.youshibi.app.data.bean.BookSectionItem;
 import com.youshibi.app.mvp.MvpLoaderActivity;
 import com.youshibi.app.ui.help.CommonAdapter;
 import com.youshibi.app.ui.help.CommonViewHolder;
@@ -53,10 +54,10 @@ public class BookCatalogActivity extends MvpLoaderActivity<BookCatalogContract.P
     private int sectionDataIndex;
 
 
-    public static Intent newIntent(Context context, Book book, int sectionCount, Map<String, BookChapter> chapter) {
-        ArrayList<BookChapter> bookChapters = new ArrayList<>();
+    public static Intent newIntent(Context context, Book book, int sectionCount, Map<String, BookSectionItem> chapter) {
+        ArrayList<BookSectionItem> bookChapters = new ArrayList<>();
 
-        for (BookChapter c : chapter.values()){
+        for (BookSectionItem c : chapter.values()){
             bookChapters.add(c);
         }
 
@@ -122,7 +123,7 @@ public class BookCatalogActivity extends MvpLoaderActivity<BookCatalogContract.P
     public BookCatalogContract.Presenter createPresenter() {
         Book book = (Book) getIntent().getParcelableExtra(K_EXTRA_BOOK);
         int chapterTotal = getIntent().getIntExtra(K_EXTRA_SECTION_COUNT,50);
-        ArrayList<BookChapter> bookChapters =  getIntent().getParcelableArrayListExtra(K_EXTRA_CHAPTER);
+        ArrayList<BookSectionItem> bookChapters =  getIntent().getParcelableArrayListExtra(K_EXTRA_CHAPTER);
 
         return new BookCatalogPresenter(book,chapterTotal,bookChapters);
     }
