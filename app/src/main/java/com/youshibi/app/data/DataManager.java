@@ -212,27 +212,15 @@ public class DataManager {
     /**
      * 获取小说章节中的内容
      *
-     * @param bookId       小说的id
-     * @param sectionIndex 章节索引
      */
-    public Observable<BookSectionContent> getBookSectionContent(String bookId, String sectionId, int sectionIndex) {
-        return getBookSectionContent(bookId, sectionId, sectionIndex, "current");
-    }
-
-    /**
-     * 获取小说章节中的内容
-     *
-     * @param bookId       小说的id
-     * @param sectionIndex 章节索引
-     */
-    public Observable<BookSectionContent> getBookSectionContent(String bookId, String sectionId, int sectionIndex, String direction) {
+    public Observable<BookSectionContent> getBookSectionContent(String sourceId, String key) {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("query_direction", direction);
+        hashMap.put("id", sourceId);
+        hashMap.put("key", key);
         return RequestClient
                 .getServerAPI()
-                .getBookSectionContent(bookId, sectionIndex, hashMap)
-                .map(new HttpResultFunc<BookSectionContent>())
-                .compose(rxCache.<BookSectionContent>transformer("getBookSectionContent" + bookId + sectionId, BookSectionContent.class, CacheStrategy.firstCache()))
+                .getBookSectionContent(hashMap)
+                .compose(rxCache.<BookSectionContent>transformer("getBookSectionContent" + sourceId + key, BookSectionContent.class, CacheStrategy.firstCache()))
                 .map(new Func1<CacheResult<BookSectionContent>, BookSectionContent>() {
                     @Override
                     public BookSectionContent call(CacheResult<BookSectionContent> bookSectionContentCacheResult) {

@@ -20,6 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.youshibi.app.R;
 import com.youshibi.app.data.bean.Book;
+import com.youshibi.app.data.bean.BookChapter;
 import com.youshibi.app.mvp.MvpLoaderActivity;
 import com.youshibi.app.ui.help.CommonAdapter;
 import com.youshibi.app.ui.help.CommonViewHolder;
@@ -28,7 +29,10 @@ import com.youshibi.app.ui.help.ToolbarHelper;
 import com.youshibi.app.util.DensityUtil;
 import com.youshibi.app.util.ToastUtil;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * author : zchu
@@ -39,6 +43,7 @@ import java.util.List;
 public class BookCatalogActivity extends MvpLoaderActivity<BookCatalogContract.Presenter> implements BookCatalogContract.View {
     private static final String K_EXTRA_BOOK = "book";
     private static final String K_EXTRA_SECTION_COUNT = "section_count";
+    private static final String K_EXTRA_CHAPTER = "K_EXTRA_CHAPTER";
     private TextView tvSectionCount;
     private TextView tvSectionSelection;
     private LinearLayout llSectionSelection;
@@ -48,10 +53,17 @@ public class BookCatalogActivity extends MvpLoaderActivity<BookCatalogContract.P
     private int sectionDataIndex;
 
 
-    public static Intent newIntent(Context context, Book book, int sectionCount) {
+    public static Intent newIntent(Context context, Book book, int sectionCount, Map<String, BookChapter> chapter) {
+        ArrayList<BookChapter> bookChapters = new ArrayList<>();
+
+        for (BookChapter c : chapter.values()){
+            bookChapters.add(c);
+        }
+
         Intent intent = new Intent(context, BookCatalogActivity.class);
         intent.putExtra(K_EXTRA_BOOK, (Parcelable) book);
         intent.putExtra(K_EXTRA_SECTION_COUNT, sectionCount);
+        intent.putParcelableArrayListExtra(K_EXTRA_CHAPTER,bookChapters);
         return intent;
     }
 
@@ -108,8 +120,11 @@ public class BookCatalogActivity extends MvpLoaderActivity<BookCatalogContract.P
     @NonNull
     @Override
     public BookCatalogContract.Presenter createPresenter() {
-        return new BookCatalogPresenter((Book) getIntent().getParcelableExtra(K_EXTRA_BOOK),
-                getIntent().getIntExtra(K_EXTRA_SECTION_COUNT, 50));
+        Book book = (Book) getIntent().getParcelableExtra(K_EXTRA_BOOK);
+        int chapterTotal = getIntent().getIntExtra(K_EXTRA_SECTION_COUNT,50);
+        ArrayList<BookChapter> bookChapters =  getIntent().getParcelableArrayListExtra(K_EXTRA_CHAPTER);
+
+        return new BookCatalogPresenter(book,chapterTotal,bookChapters);
     }
 
 

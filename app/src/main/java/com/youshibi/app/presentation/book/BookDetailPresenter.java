@@ -123,9 +123,9 @@ public class BookDetailPresenter extends BaseRxPresenter<BookDetailContract.View
     public void openRead(Context context) {
         if (bookSectionAdapter != null && bookSectionAdapter.getData().size() > 0) {
             BookSectionItem bookSectionItem = bookSectionAdapter.getData().get(0);
-            AppRouter.showReadActivity(context, book, bookSectionItem.getSectionIndex(), bookSectionItem.getSectionId());
+//            AppRouter.showReadActivity(context, book, bookSectionItem.getSectionIndex(), bookSectionItem.getSectionId(),book.getChapter());
         } else {
-            AppRouter.showReadActivity(context, book, null, null);
+//            AppRouter.showReadActivity(context, book, null, null);
         }
     }
 
@@ -137,7 +137,7 @@ public class BookDetailPresenter extends BaseRxPresenter<BookDetailContract.View
                 helper.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AppRouter.showReadActivity(v.getContext(), book, item.getSectionIndex(), item.getSectionId());
+//                        AppRouter.showReadActivity(v.getContext(), book, item.getSectionIndex(), item.getSectionId());
                     }
                 });
             }

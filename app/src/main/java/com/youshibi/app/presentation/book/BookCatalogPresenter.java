@@ -33,13 +33,15 @@ public class BookCatalogPresenter extends BaseRxPresenter<BookCatalogContract.Vi
 
     private Book mBook;
     private int mSectionCount;
+    private ArrayList<BookChapter> mBookChapters;
 
     private CommonAdapter<BookSectionItem> bookSectionAdapter;
     private List<String> sectionData;
 
-    public BookCatalogPresenter(Book book, int sectionCount) {
+    public BookCatalogPresenter(Book book, int sectionCount,ArrayList<BookChapter> bookChapters) {
         this.mBook = book;
         this.mSectionCount = sectionCount;
+        this.mBookChapters = bookChapters;
     }
 
     @Override
@@ -58,13 +60,11 @@ public class BookCatalogPresenter extends BaseRxPresenter<BookCatalogContract.Vi
 
     @Override
     public void loadData(int page) {
-        Map<String, BookChapter> chapters = mBook.getChapter();
         List<BookSectionItem> datas = new LinkedList<>();
-
-        for (Map.Entry<String , BookChapter> entry : chapters.entrySet()){
+        for (BookChapter chapter : mBookChapters){
             BookSectionItem item = new BookSectionItem();
-            item.setSectionName(entry.getValue().getChapterName());
-            item.setSectionId(entry.getValue().getChapterId());
+            item.setSectionName(chapter.getChapterName());
+            item.setSectionId(chapter.getChapterId());
             item.setSectionIndex(datas.size());
             datas.add(item);
         }
@@ -80,7 +80,7 @@ public class BookCatalogPresenter extends BaseRxPresenter<BookCatalogContract.Vi
                     helper.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                             AppRouter.showReadActivity(v.getContext(), mBook, item.getSectionIndex(), item.getSectionId());
+                             AppRouter.showReadActivity(v.getContext(), mBook, item.getSectionIndex(), item.getSectionId(),mBookChapters);
                         }
                     });
                 }

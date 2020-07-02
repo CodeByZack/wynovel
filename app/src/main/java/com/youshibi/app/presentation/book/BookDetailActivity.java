@@ -187,7 +187,7 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
                 break;
             case R.id.ll_book_detail_catalog:
                 if (bookDetail != null) {
-                    AppRouter.showBookCatalogActivity(this, book, bookDetail.getChapterCount());
+                    AppRouter.showBookCatalogActivity(this, book, book.getChapterCount(),book.getChapter());
                 }
                 break;
         }

@@ -16,6 +16,7 @@ import com.youshibi.app.rx.RetryWithDelay;
 import com.youshibi.app.rx.RxBus;
 import com.youshibi.app.rx.SimpleSubscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscription;
@@ -36,11 +37,12 @@ public class ReadPresenter extends BaseRxPresenter<ReadContract.View> implements
     private BookSectionAdapter bookSectionAdapter;
     private List<BookSectionItem> mBookSectionItems;
 
-    public ReadPresenter(BookTb bookTb) {
+    public ReadPresenter(BookTb bookTb, ArrayList<BookSectionItem> bookSectionItems) {
         this.mBookTb = bookTb;
         this.mBookId = bookTb.getId();
         this.mSectionIndex = bookTb.getLatestReadSection();
         this.mSectionId = bookTb.getLatestReadSectionId();
+        this.mBookSectionItems = bookSectionItems;
     }
 
     @Override
@@ -50,45 +52,9 @@ public class ReadPresenter extends BaseRxPresenter<ReadContract.View> implements
     }
 
     private void loadSectionList() {
-        DataManager
-                .getInstance()
-                .getBookSectionList(mBookId, true, null, null, mBookTb.getHasUpdate())
-                .retryWhen(new RetryWithDelay(3, 3000))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleSubscriber<List<BookSectionItem>>() {
-                    @Override
-                    public void onNext(List<BookSectionItem> bookSectionItems) {
 
-                        if (DBManger.getInstance().hasBookTb(mBookTb.getId())) {
-                            mBookTb.setLatestReadTimestamp(System.currentTimeMillis()); //更新最后一次的阅读时间
-                            mBookTb.setReadNumber(mBookTb.getReadNumber() + 1); //更新阅读次数
-                            if (mBookTb.getHasUpdate()) {
-                                mBookTb.setHasUpdate(false);
-                            }
-                            DBManger.getInstance().updateBookTb(mBookTb);
-                            RxBus.getDefault().post(new BookcaseRefreshEvent());
-                        }
-                        if (isViewAttached()) {
-                            getView().setSectionListAdapter(createBookSectionAdapter(bookSectionItems));
-                        }
-                        mBookSectionItems = bookSectionItems;
-                        if (mSectionIndex != null && mSectionId != null) {
-                            doLoadData(mSectionIndex, mSectionId, true);
-                        } else {
-                            BookSectionItem bookSectionItem = bookSectionItems.get(0);
-                            doLoadData(bookSectionItem.getSectionIndex(), bookSectionItem.getSectionId(), true);
-                        }
-                    }
+        doLoadData(mSectionIndex, mSectionId, true);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                        if (isViewAttached()) {
-                            getView().showToast(handleException(e));
-                        }
-                    }
-                });
 
     }
 
@@ -123,7 +89,7 @@ public class ReadPresenter extends BaseRxPresenter<ReadContract.View> implements
     private void loadSectionContent(final int sectionIndex, String sectionId, final boolean isOpen) {
         Subscription subscribe = DataManager
                 .getInstance()
-                .getBookSectionContent(mBookId, sectionId, sectionIndex)
+                .getBookSectionContent(mBookId, sectionId)
                 .retryWhen(new RetryWithDelay(3, 3000))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -48,6 +48,11 @@ public class Book implements Serializable, Parcelable {
     @SerializedName("chapter_title")
     private String chapterName;
 
+    @SerializedName("source_id")
+    private String sourceId;
+
+
+
     @SerializedName("chapter")
     private Map<String,BookChapter> chapter;
 
@@ -222,6 +227,13 @@ public class Book implements Serializable, Parcelable {
     public Book() {
     }
 
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
 
     @Override
     public int describeContents() {
@@ -243,7 +255,7 @@ public class Book implements Serializable, Parcelable {
         dest.writeLong(this.collectionNum);
         dest.writeLong(this.recommendNum);
         dest.writeString(this.createDateTime);
-        dest.writeMap(this.chapter);
+        dest.writeString(this.sourceId);
     }
 
     protected Book(Parcel in) {
@@ -260,7 +272,7 @@ public class Book implements Serializable, Parcelable {
         this.collectionNum = in.readLong();
         this.recommendNum = in.readLong();
         this.createDateTime = in.readString();
-        this.chapter = in.readHashMap(HashMap.class.getClassLoader());
+        this.sourceId = in.readString();
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {

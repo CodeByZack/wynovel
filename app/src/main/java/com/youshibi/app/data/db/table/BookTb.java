@@ -3,10 +3,14 @@ package com.youshibi.app.data.db.table;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.youshibi.app.data.bean.BookChapter;
+import com.youshibi.app.data.bean.BookSectionItem;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
 
 /**
  * Created by Chu on 2017/5/29.
@@ -49,6 +53,7 @@ public class BookTb implements Parcelable {
     private long createTimestamp;
 
     private long updateTimestamp;
+
 
     /**
      * Used to resolve relations

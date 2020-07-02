@@ -34,11 +34,7 @@ public interface ServerAPI {
     @GET("/v1/books")
     Observable<HttpResult<DataList<Book>>> getBookList(@QueryMap HashMap<String, Object> map);
 
-    /**
-     * 获取小说详情
-     */
-    @GET("/api/novel/contentapi/id/{bookId}")
-    Observable<Book> getBookDetail(@Path("bookId") String bookId);
+
 
     /**
      * 书籍最新章节信息
@@ -67,14 +63,6 @@ public interface ServerAPI {
 
 
     /**
-     * 获取小说章节中的内容
-     */
-    @GET("/v1/books/{bookId}/chapters/{position}")
-    Observable<HttpResult<BookSectionContent>> getBookSectionContent(@Path("bookId") String bookId,
-                                                                     @Path("position") int position,
-                                                                     @QueryMap HashMap<String, Object> map);
-
-    /**
      * 获取所有频道
      */
     @GET("/api/novel/category")
@@ -85,6 +73,23 @@ public interface ServerAPI {
      */
     @GET("/api/novel/listsapi")
     Observable<List<Book>> getChannelBooks(@QueryMap HashMap<String, Object> map);
+
+    /**
+     * 获取小说详情
+     */
+    @GET("/api/novel/contentapi/id/{bookId}")
+    Observable<Book> getBookDetail(@Path("bookId") String bookId);
+
+    /**
+     * 获取小说章节中的内容
+     */
+    @GET("/api/novel/chapter")
+    Observable<BookSectionContent> getBookSectionContent(@QueryMap HashMap<String, Object> map);
+
+
+
+
+
 
     /**
      * 获取频道内容-书籍列表

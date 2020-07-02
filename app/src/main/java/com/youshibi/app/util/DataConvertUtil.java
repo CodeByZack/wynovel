@@ -15,7 +15,7 @@ public class DataConvertUtil {
         if (bookTb == null) {
             bookTb = new BookTb();
         }
-        bookTb.setId(book.getId());
+        bookTb.setId(book.getSourceId());
         bookTb.setAuthor(book.getAuthor());
         bookTb.setCoverUrl(book.getCoverUrl());
         bookTb.setDescribe(book.getDescribe());

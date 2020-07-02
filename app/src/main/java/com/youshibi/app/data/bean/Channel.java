@@ -111,8 +111,8 @@ public class Channel implements Serializable {
         if (obj instanceof Channel) {
             Channel channel = (Channel) obj;
             if (channel.getChannelId() == channelId) {
-                return (channelType == null && channelType.equals(channel.getChannelType()))
-                        || channel.getChannelType().equals(channelType);
+                return (channelType == null && channelName.equals(channel.getChannelName()))
+                        || channel.getChannelName().equals(channelName);
             }
         }
         return false;

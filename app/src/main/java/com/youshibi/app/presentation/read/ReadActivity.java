@@ -31,6 +31,8 @@ import com.youshibi.app.AppManager;
 import com.youshibi.app.R;
 import com.youshibi.app.data.DBManger;
 import com.youshibi.app.data.bean.Book;
+import com.youshibi.app.data.bean.BookChapter;
+import com.youshibi.app.data.bean.BookSectionItem;
 import com.youshibi.app.data.db.table.BookTb;
 import com.youshibi.app.mvp.MvpActivity;
 import com.youshibi.app.pref.AppConfig;
@@ -44,6 +46,7 @@ import com.youshibi.app.util.ToastUtil;
 import com.zchu.reader.PageLoaderAdapter;
 import com.zchu.reader.PageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.GONE;
@@ -61,7 +64,7 @@ public class ReadActivity extends MvpActivity<ReadContract.Presenter> implements
     }
 
     private static final String K_EXTRA_BOOK_TB = "book_tb";
-
+    private static final String K_EXTRA_BOOK_CHAPTER = "K_EXTRA_BOOK_CHAPTER";
     private DrawerLayout readDrawer;
     private LinearLayout readSide;
     private RecyclerView readRvSection;
@@ -95,15 +98,29 @@ public class ReadActivity extends MvpActivity<ReadContract.Presenter> implements
     private boolean isShowCollectionDialog = false;
     private BookTb mBookTb;
     private BookSectionAdapter sectionAdapter;
+    private ArrayList<BookSectionItem> mBookCHAPTER;
 
 
-    public static Intent newIntent(Context context, Book book, Integer sectionIndex, String sectionId) {
+    public static Intent newIntent(Context context, Book book, Integer sectionIndex, String sectionId, ArrayList<BookChapter> bookChapters) {
+
+        ArrayList<BookSectionItem> bookSectionItems = new ArrayList<>();
+
+        for (BookChapter c : bookChapters){
+            BookSectionItem bookSectionItem = new BookSectionItem();
+            bookSectionItem.setSectionIndex(c.getChapterIndex());
+            bookSectionItem.setSectionId(c.getChapterId());
+            bookSectionItem.setSectionName(c.getChapterName());
+            bookSectionItems.add(bookSectionItem);
+        }
+
         Intent intent = new Intent(context, ReadActivity.class);
         BookTb bookTb = DataConvertUtil.book2BookTb(book, null);
         bookTb.setLatestReadSection(sectionIndex);
         bookTb.setLatestReadSectionId(sectionId);
+
         intent
                 .putExtra(K_EXTRA_BOOK_TB, bookTb);
+        intent.putParcelableArrayListExtra(K_EXTRA_BOOK_CHAPTER,bookSectionItems);
         return intent;
     }
 
@@ -122,6 +139,7 @@ public class ReadActivity extends MvpActivity<ReadContract.Presenter> implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
         mBookTb = getIntent().getParcelableExtra(K_EXTRA_BOOK_TB);
+        mBookCHAPTER = getIntent().getParcelableArrayListExtra(K_EXTRA_BOOK_CHAPTER);
         ReaderSettingManager.init(this);
         ToolbarHelper.initToolbar(this, R.id.toolbar, true, mBookTb.getName());
         findView();
@@ -254,7 +272,7 @@ public class ReadActivity extends MvpActivity<ReadContract.Presenter> implements
     @NonNull
     @Override
     public ReadContract.Presenter createPresenter() {
-        return new ReadPresenter(mBookTb);
+        return new ReadPresenter(mBookTb,mBookCHAPTER);
     }
 
 
