@@ -39,7 +39,7 @@ public class ReadPresenter extends BaseRxPresenter<ReadContract.View> implements
 
     public ReadPresenter(BookTb bookTb, ArrayList<BookSectionItem> bookSectionItems) {
         this.mBookTb = bookTb;
-        this.mBookId = bookTb.getId();
+        this.mBookId = bookTb.getSourceId();
         this.mSectionIndex = bookTb.getLatestReadSection();
         this.mSectionId = bookTb.getLatestReadSectionId();
         this.mBookSectionItems = bookSectionItems;

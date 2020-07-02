@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.youshibi.app.mvp.MvpLoaderActivity;
 import com.youshibi.app.ui.help.CommonAdapter;
 import com.youshibi.app.ui.help.CommonViewHolder;
 import com.youshibi.app.ui.help.ToolbarHelper;
+import com.youshibi.app.ui.widget.LoadErrorView;
 import com.youshibi.app.ui.widget.ShapeTextView;
 import com.youshibi.app.util.DateUtil;
 import com.youshibi.app.util.GlideApp;
@@ -40,7 +43,6 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
 
 
     private Book book;
-    private Book bookDetail;
 
     private ImageView ivCover;
     private TextView tvReadCount;
@@ -53,7 +55,8 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
     private RecyclerView rvRecommendBook;
     private TextView tvWordCountCopyright;
     private TextView tvCreateDateCopyright;
-
+    private LoadErrorView loadingView;
+    private View contentView;
 
 
 
@@ -66,7 +69,7 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initExtra();
+        book = getIntent().getParcelableExtra(K_EXTRA_BOOK);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
         ToolbarHelper.initToolbar(this, R.id.toolbar, true, book != null ? book.getName() : "书籍详情");
@@ -83,8 +86,10 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
         tvUpdateTime = findViewById(R.id.tv_update_time);
         rvRecommendBook = findViewById(R.id.rv_recommend_book);
         rvRecommendBook.setNestedScrollingEnabled(false);
+        loadingView = findViewById(R.id.load_error_view);
+        contentView = findViewById(R.id.contentview);
         bindOnClickLister(this, R.id.fl_add_bookcase,R.id.fl_download_book, R.id.fl_open_book, R.id.ll_book_detail_catalog);
-        initDisplay();
+
 
     }
 
@@ -102,7 +107,14 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
         tvWordCountCopyright.setText(tvWordCountCopyright.getText()+StringUtils.formatCount(book.getBookWordNum()) + "字");
         tvCreateDateCopyright.setText(tvCreateDateCopyright.getText()+book.getCreateDateTime());
         tvDescribe.setText(book.getDescribe());
-
+        if (book.isFinished()) {
+            tvCatalogTitle.setText("查看目录：共" + book.getChapterCount() + "章");
+            tvUpdateTime.setText("已完结");
+        } else {
+            tvCatalogTitle.setText("最新章节：" + book.getChapterName());
+            long aLong = Long.parseLong(book.getCreateDateTime() + "000");
+            tvUpdateTime.setText(DateUtil.formatSomeAgo(aLong));
+        }
 
     }
 
@@ -112,14 +124,10 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
         presenter.loadData();
     }
 
-    private void initExtra() {
-        book = getIntent().getParcelableExtra(K_EXTRA_BOOK);
-    }
-
     @NonNull
     @Override
     public BookDetailContract.Presenter createPresenter() {
-        return new BookDetailPresenter(book);
+        return new BookDetailPresenter(book.getId());
     }
 
     @Override
@@ -161,16 +169,21 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
 
     @Override
     public void showContent() {
+        loadingView.showContent();
+        contentView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showLoading() {
-
+        contentView.setVisibility(View.GONE);
+        loadingView.showLoading();
     }
 
     @Override
     public void showError(String errorMsg) {
         ToastUtil.showToast(errorMsg);
+        contentView.setVisibility(View.GONE);
+        loadingView.showError();
     }
 
 
@@ -192,7 +205,7 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
                 ToastUtil.showToast(getString(R.string.developing));
                 break;
             case R.id.ll_book_detail_catalog:
-                if (bookDetail != null) {
+                if (book != null) {
                     AppRouter.showBookCatalogActivity(this, book, book.getChapterCount(),book.getChapter());
                 }
                 break;
@@ -202,14 +215,6 @@ public class BookDetailActivity extends MvpLoaderActivity<BookDetailContract.Pre
     @Override
     public void setData(Book data) {
         this.book = data;
-        this.bookDetail = data;
-        if (book.isFinished()) {
-            tvCatalogTitle.setText("查看目录：共" + data.getChapterCount() + "章");
-            tvUpdateTime.setText("已完结");
-        } else {
-            tvCatalogTitle.setText("最新章节：" + data.getChapterName());
-            long aLong = Long.parseLong(data.getCreateDateTime() + "000");
-            tvUpdateTime.setText(DateUtil.formatSomeAgo(aLong));
-        }
+        initDisplay();
     }
 }

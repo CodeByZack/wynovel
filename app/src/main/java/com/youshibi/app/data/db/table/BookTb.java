@@ -24,6 +24,7 @@ public class BookTb implements Parcelable {
     @Id
     private String id;
 
+    private String sourceId;
     private String name;
 
     private String coverUrl;
@@ -69,13 +70,14 @@ public class BookTb implements Parcelable {
     private transient BookTbDao myDao;
 
 
-    @Generated(hash = 1269462461)
-    public BookTb(String id, String name, String coverUrl, String describe, String author,
-            boolean isFinished, int readNumber, long latestReadTimestamp,
+    @Generated(hash = 1885317936)
+    public BookTb(String id, String sourceId, String name, String coverUrl, String describe,
+            String author, boolean isFinished, int readNumber, long latestReadTimestamp,
             Integer latestReadSection, String latestReadSectionId, int latestReadPage,
             boolean hasUpdate, Integer sectionCount, int sort, long createTimestamp,
             long updateTimestamp, String chaptersJson) {
         this.id = id;
+        this.sourceId = sourceId;
         this.name = name;
         this.coverUrl = coverUrl;
         this.describe = describe;
@@ -260,6 +262,7 @@ public class BookTb implements Parcelable {
         dest.writeByte(this.hasUpdate ? (byte) 1 : (byte) 0);
         dest.writeInt(this.sort);
         dest.writeString(this.chaptersJson);
+        dest.writeString(this.sourceId);
     }
 
     public Integer getSectionCount() {
@@ -294,6 +297,14 @@ public class BookTb implements Parcelable {
         this.chaptersJson = chaptersJson;
     }
 
+    public String getSourceId() {
+        return this.sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1406023060)
     public void __setDaoSession(DaoSession daoSession) {
@@ -316,6 +327,7 @@ public class BookTb implements Parcelable {
         this.hasUpdate = in.readByte() != 0;
         this.sort = in.readInt();
         this.chaptersJson = in.readString();
+        this.sourceId = in.readString();
     }
 
     public static final Creator<BookTb> CREATOR = new Creator<BookTb>() {

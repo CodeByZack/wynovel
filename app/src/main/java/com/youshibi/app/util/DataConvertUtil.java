@@ -19,7 +19,8 @@ public class DataConvertUtil {
         if (bookTb == null) {
             bookTb = new BookTb();
         }
-        bookTb.setId(book.getSourceId());
+        bookTb.setId(book.getId());
+        bookTb.setSourceId(book.getSourceId());
         bookTb.setAuthor(book.getAuthor());
         bookTb.setCoverUrl(book.getCoverUrl());
         bookTb.setDescribe(book.getDescribe());
@@ -36,7 +37,7 @@ public class DataConvertUtil {
         book.setAuthor(bookTb.getAuthor());
         book.setCoverUrl(bookTb.getCoverUrl());
         book.setDescribe(bookTb.getDescribe());
-        book.setFinished(bookTb.getIsFinished());
+//        book.setFinished(bookTb.getIsFinished());
         book.setChapterCount(bookTb.getSectionCount());
         book.setName(bookTb.getName());
         return book;

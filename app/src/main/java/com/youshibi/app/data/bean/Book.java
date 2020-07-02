@@ -79,13 +79,13 @@ public class Book implements Serializable, Parcelable {
     @SerializedName("category")
     private int category;
 
-    @SerializedName("is_finish")
-    private boolean isFinished;
+    @SerializedName("serialize")
+    private int isFinished;
 
     @SerializedName("book_type_id")
     private int bookTypeId;
 
-    @SerializedName("book_type_name")
+    @SerializedName("ctitle")
     private String bookTypeName;
 
     @SerializedName("word")
@@ -152,10 +152,10 @@ public class Book implements Serializable, Parcelable {
     }
 
     public boolean isFinished() {
-        return isFinished;
+        return isFinished == 1;
     }
 
-    public void setFinished(boolean finished) {
+    public void setFinished(int finished) {
         isFinished = finished;
     }
 
@@ -247,7 +247,7 @@ public class Book implements Serializable, Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.describe);
         dest.writeString(this.author);
-        dest.writeByte(this.isFinished ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.isFinished);
         dest.writeInt(this.bookTypeId);
         dest.writeString(this.bookTypeName);
         dest.writeLong(this.bookWordNum);
@@ -264,7 +264,7 @@ public class Book implements Serializable, Parcelable {
         this.name = in.readString();
         this.describe = in.readString();
         this.author = in.readString();
-        this.isFinished = in.readByte() != 0;
+        this.isFinished = in.readInt();
         this.bookTypeId = in.readInt();
         this.bookTypeName = in.readString();
         this.bookWordNum = in.readLong();

@@ -15,6 +15,7 @@ import com.youshibi.app.rx.SimpleSubscriber;
 import com.youshibi.app.ui.help.CommonAdapter;
 import com.youshibi.app.ui.help.CommonViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -28,120 +29,72 @@ import rx.schedulers.Schedulers;
 
 public class BookDetailPresenter extends BaseRxPresenter<BookDetailContract.View> implements BookDetailContract.Presenter {
 
+    private String bookId;
     private Book book;
-    private CommonAdapter<BookSectionItem> bookSectionAdapter;
 
-    public BookDetailPresenter(Book book) {
-        this.book = book;
+    public BookDetailPresenter(String bookId) {
+        this.bookId = bookId;
     }
 
 
     @Override
     public void loadData() {
         if (isViewAttached()) {
-            if (bookSectionAdapter != null) {
-                getView().setListAdapter(bookSectionAdapter);
-                getView().showContent();
-                return;
-            }
             getView().showLoading();
         }
 
         DataManager
                 .getInstance()
-                .getBookDetail(book.getId())
+                .getBookDetail(bookId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleSubscriber<Book>() {
                     @Override
                     public void onNext(Book bookDetail) {
                         if (isViewAttached()) {
+                            book = bookDetail;
                             getView().setData(bookDetail);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                        if (isViewAttached()) {
-                            getView().showError(e.getMessage());
-                        }
-                    }
-                });
-
-        loadRecommendBooks();
-    }
-
-    private void loadRecommendBooks() {
-        Subscription subscribe = DataManager
-                .getInstance()
-                .getBookList(book.getBookTypeId(), new Random().nextInt(10)+1, 6)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleSubscriber<DataList<Book>>() {
-                    @Override
-                    public void onNext(DataList<Book> bookDataList) {
-                        if (isViewAttached()) {
-                            getView().setRecommendBooks(bookDataList.DataList);
-                        }
-                    }
-                });
-        addSubscription2Destroy(subscribe);
-    }
-
-    private void loadSectionList() {
-        Subscription subscribe = DataManager
-                .getInstance()
-                .getBookSectionList(book.getId(), true)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleSubscriber<List<BookSectionItem>>() {
-
-
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                        if (isViewAttached()) {
-                            getView().showError(e.getMessage());
-                        }
-
-                    }
-
-                    @Override
-                    public void onNext(List<BookSectionItem> bookSectionItems) {
-                        if (isViewAttached()) {
-                            getView().setListAdapter(createBookSectionAdapter(bookSectionItems));
                             getView().showContent();
                         }
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        if (isViewAttached()) {
+                            getView().showError(e.getMessage());
+                        }
                     }
                 });
-        addSubscription2Detach(subscribe);
+
+//        loadRecommendBooks();
     }
+
+//    private void loadRecommendBooks() {
+//        Subscription subscribe = DataManager
+//                .getInstance()
+//                .getBookList(bookId, new Random().nextInt(10)+1, 6)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new SimpleSubscriber<DataList<Book>>() {
+//                    @Override
+//                    public void onNext(DataList<Book> bookDataList) {
+//                        if (isViewAttached()) {
+//                            getView().setRecommendBooks(bookDataList.DataList);
+//                        }
+//                    }
+//                });
+//        addSubscription2Destroy(subscribe);
+//    }
+
 
     @Override
     public void openRead(Context context) {
-        if (bookSectionAdapter != null && bookSectionAdapter.getData().size() > 0) {
-            BookSectionItem bookSectionItem = bookSectionAdapter.getData().get(0);
-//            AppRouter.showReadActivity(context, book, bookSectionItem.getSectionIndex(), bookSectionItem.getSectionId(),book.getChapter());
-        } else {
-//            AppRouter.showReadActivity(context, book, null, null);
+        ArrayList<BookSectionItem> bookSectionItems = new ArrayList<>();
+        for (BookSectionItem sectionItem : book.getChapter().values()){
+            bookSectionItems.add(sectionItem);
         }
+        AppRouter.showReadActivity(context, book, 0, bookSectionItems.get(0).getSectionId(),bookSectionItems);
     }
 
-    private CommonAdapter<BookSectionItem> createBookSectionAdapter(List<BookSectionItem> bookSectionItems) {
-        bookSectionAdapter = new CommonAdapter<BookSectionItem>(R.layout.list_item_book_section, bookSectionItems) {
-            @Override
-            protected void convert(CommonViewHolder helper, final BookSectionItem item) {
-                helper.setText(R.id.tv_section_name, item.getSectionName());
-                helper.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        AppRouter.showReadActivity(v.getContext(), book, item.getSectionIndex(), item.getSectionId());
-                    }
-                });
-            }
-        };
-        return bookSectionAdapter;
-    }
 }
